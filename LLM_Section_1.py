@@ -16,3 +16,5 @@ responses = ollama.chat.completions.create(
 )
 print(responses.choices[0].message.content)
 
+
+

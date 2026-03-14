@@ -6,7 +6,12 @@
 import os 
 from openai import OpenAI
 from dotenv import load_dotenv
-from scrapper import scrape_content
+from scrapper import scrape_content, fetch_website_links
+
+
+# ollama base url 
+base_url="http://localhost:11434/v1"
+
 
 #initialization and constants
 
@@ -22,6 +27,57 @@ else:
 
 
 
+#testing the scrapper function 
+
+links = fetch_website_links("https://edwarddonner.com")
+
+print(links)
+
+
+#initialize the openai client
+
+ollama = OpenAI(api_key=api_key, base_url= base_url)
 
 
 
+
+
+#defining link_system prompt
+
+
+link_system_prompt= """
+
+You are provided with a list of links found on a webpage.
+You are able to decide which of the links would be most relevant to include in a brochure about the company,
+such as links to an About page, or a Company page, or Careers/Jobs pages.
+You should respond in JSON as in this example:
+
+{
+    "links": [
+        {"type": "about page", "url": "https://full.url/goes/here/about"},
+        {"type": "careers page", "url": "https://another.full.url/careers"}
+    ]
+}
+
+"""
+
+def get_link_user_prompt(url):
+
+
+    user_prompt =F"""
+
+        Here is the list of links on the website {url} -
+        Please decide which of these are relevant web links for a brochure about the company, 
+        respond with the full https URL in JSON format.
+        Do not include Terms of Service, Privacy, email links.
+
+        Links (some might be relative links):
+        """
+    
+    links = fetch_website_links(url)
+    user_prompt += "\n".join(links)
+    return user_prompt
+
+
+
+print(get_link_user_prompt("https://edwarddonner.com"))

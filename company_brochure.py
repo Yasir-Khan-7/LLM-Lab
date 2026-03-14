@@ -6,7 +6,7 @@
 import os 
 from openai import OpenAI
 from dotenv import load_dotenv
-
+from scrapper import scrape_content
 
 #initialization and constants
 
@@ -19,6 +19,7 @@ if api_key and api_key.startswith("gsk_"):
     print("API key is set correctly.")
 else:
     print("API key is not set correctly. Please check your .env file.")
+
 
 
 

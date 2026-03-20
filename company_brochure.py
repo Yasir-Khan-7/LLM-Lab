@@ -26,25 +26,15 @@ else:
     print("API key is not set correctly. Please check your .env file.")
 
 
-
 #testing the scrapper function 
+# links = fetch_website_links("https://www.apple.com")
 
-links = fetch_website_links("https://edwarddonner.com")
-
-print(links)
-
+# print(links)
 
 #initialize the openai client
-
 ollama = OpenAI(api_key=api_key, base_url= base_url)
 
-
-
-
-
 #defining link_system prompt
-
-
 link_system_prompt= """
 
 You are provided with a list of links found on a webpage.
@@ -60,7 +50,6 @@ You should respond in JSON as in this example:
 }
 
 """
-
 def get_link_user_prompt(url):
 
 
@@ -80,4 +69,25 @@ def get_link_user_prompt(url):
 
 
 
-print(get_link_user_prompt("https://edwarddonner.com"))
+def select_relevant_links(url):
+
+    responses = ollama.chat.completions.create(
+        model ="minimax-m2.5:cloud",
+
+        messages =[
+            {"role":"system", "content": link_system_prompt},
+            {"role":"user", "content": get_link_user_prompt(url)}
+
+
+        ]
+      
+
+    )
+    return responses.choices[0].message.content
+
+
+
+
+result = select_relevant_links("https://edwarddonner.com/")
+
+print(result)

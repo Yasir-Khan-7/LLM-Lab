@@ -50,6 +50,7 @@ You should respond in JSON as in this example:
 }
 
 """
+#defining the user prompt for link selection
 def get_link_user_prompt(url):
 
 
@@ -68,7 +69,7 @@ def get_link_user_prompt(url):
     return user_prompt
 
 
-
+# testing the link selection function
 def select_relevant_links(url):
 
     responses = ollama.chat.completions.create(
@@ -77,16 +78,11 @@ def select_relevant_links(url):
         messages =[
             {"role":"system", "content": link_system_prompt},
             {"role":"user", "content": get_link_user_prompt(url)}
-
-
         ]
       
 
     )
     return responses.choices[0].message.content
-
-
-
 
 result = select_relevant_links("https://edwarddonner.com/")
 

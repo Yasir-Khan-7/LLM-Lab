@@ -84,6 +84,10 @@ def select_relevant_links(url):
     )
     return responses.choices[0].message.content
 
+
+
 result = select_relevant_links("https://edwarddonner.com/")
+
+result = select_relevant_links("https://www.apple.com/")
 
 print(result)

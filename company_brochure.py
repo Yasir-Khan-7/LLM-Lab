@@ -3,6 +3,7 @@
 # We will be provided a company name and their primary website."
 
 #import neccesry libraries
+import json
 import os 
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -12,6 +13,7 @@ from scrapper import scrape_content, fetch_website_links
 # ollama base url 
 base_url="http://localhost:11434/v1"
 
+Model = "minimax-m2.5:cloud"
 
 #initialization and constants
 
@@ -71,23 +73,41 @@ def get_link_user_prompt(url):
 
 # testing the link selection function
 def select_relevant_links(url):
-
+    print(f"Selecting relevant links for {url} by calling  {Model}")
     responses = ollama.chat.completions.create(
-        model ="minimax-m2.5:cloud",
-
+        model = Model,
         messages =[
             {"role":"system", "content": link_system_prompt},
             {"role":"user", "content": get_link_user_prompt(url)}
         ]
+        ,response_format={"type": "json_object"}
       
 
     )
-    return responses.choices[0].message.content
+    results =  responses.choices[0].message.content
+    links = json.loads(results)
+    print(f"found {len(links['links'])} relevant links for {url}")
+    return links
+
+output = select_relevant_links("https://edwarddonner.com/")
+
+# print(output)
+
+
+#Step 2 Creation of brochure content
+
+def fetch_page_and_relevant_links(url):
+    contents = scrape_content(url)
+    relevant_links = select_relevant_links(url)
+    print(contents)
+    print(relevant_links)
+    result = f"## Landing Page:\n\n{contents}\n## Relevant Links:\n"
+
+    for link in relevant_links['links']:
+      result += f"\n\n### Link: {link['type']}\n"
+      result += scrape_content(link["url"])
+    return result
 
 
 
-result = select_relevant_links("https://edwarddonner.com/")
-
-result = select_relevant_links("https://www.apple.com/")
-
-print(result)
+print(fetch_page_and_relevant_links("https://huggingface.co"))

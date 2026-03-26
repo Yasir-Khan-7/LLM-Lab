@@ -13,7 +13,7 @@ headers= {
 # Function to scrape content from a given URL
 def scrape_content(url):
 
-
+    print(f"Scraping content from {url} with headers {headers}")
     response = requests.get(url, headers=headers, timeout=10)
 
     if response.status_code == 200:
@@ -22,20 +22,18 @@ def scrape_content(url):
 
         title = soup.title.string if soup.title else "No title found"
         if soup.body:
-            for irrelevant in (["script", "style", "img", "input"]):
-                irrelevant.decompose()
+            for tag_name in ["script", "style", "img", "input"]:
+                for elem in soup.body.find_all(tag_name):
+                    elem.decompose()
 
-            text = soup.body.get_text(separator="\n",strip = True)
-
+            text = soup.body.get_text(separator="\n", strip=True)
         else:
             text = "No body content found"
-        return (title + "\n\n"  +text)[:2000]
-
-
-# Function to fetch all links from a given URL
+        return (title + "\n\n" + text)[:2000]
+        # Function to fetch all links from a given URL
 def fetch_website_links(url):
 
-
+    
     response   = requests.get(url, headers = headers, timeout=10)
 
     if response.status_code == 200:

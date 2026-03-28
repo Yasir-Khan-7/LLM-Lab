@@ -12,35 +12,38 @@ headers= {
 
 # Function to scrape content from a given URL
 def scrape_content(url):
-
     print(f"Scraping content from {url} with headers {headers}")
-    response = requests.get(url, headers=headers, timeout=10)
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+    except Exception as exc:
+        return f"Failed to scrape {url}: {exc}"
 
-    if response.status_code == 200:
+    if response.status_code != 200:
+        return f"Failed to fetch {url}: status code {response.status_code}"
 
-        soup = BeautifulSoup(response.content, "html.parser")
+    soup = BeautifulSoup(response.content, "html.parser")
+    title = soup.title.string if soup.title else "No title found"
 
-        title = soup.title.string if soup.title else "No title found"
-        if soup.body:
-            for tag_name in ["script", "style", "img", "input"]:
-                for elem in soup.body.find_all(tag_name):
-                    elem.decompose()
+    if soup.body:
+        for tag_name in ["script", "style", "img", "input"]:
+            for elem in soup.body.find_all(tag_name):
+                elem.decompose()
+        text = soup.body.get_text(separator="\n", strip=True)
+    else:
+        text = "No body content found"
 
-            text = soup.body.get_text(separator="\n", strip=True)
-        else:
-            text = "No body content found"
-        return (title + "\n\n" + text)[:2000]
-        # Function to fetch all links from a given URL
+    return (title + "\n\n" + text)[:2000]
+
+# Function to fetch all links from a given URL
 def fetch_website_links(url):
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+    except Exception:
+        return []
 
-    
-    response   = requests.get(url, headers = headers, timeout=10)
+    if response.status_code != 200:
+        return []
 
-    if response.status_code == 200:
-
-        soup = BeautifulSoup(response.content, "html.parser")
-
-
-        links = [link.get("href") for link in soup.find_all("a")]
-
-        return [link for link in links if link]
+    soup = BeautifulSoup(response.content, "html.parser")
+    links = [link.get("href") for link in soup.find_all("a")]
+    return [link for link in links if link]

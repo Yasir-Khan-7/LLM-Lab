@@ -56,7 +56,16 @@ You should respond in JSON as in this example:
     ]
 }
 
-"""
+"
+# Alternative link system prompt example:
+#
+# link_system_prompt = """
+# You will receive a list of URLs from a company homepage.
+# Pick the most useful internal pages for a brochure, such as About, Careers, Pricing, Product, or Blog.
+# Return at most 5 links in JSON only.
+# Exclude external sites, social profiles, and legal pages.
+# """
+
 #defining the user prompt for link selection
 def get_link_user_prompt(url):
 
@@ -75,6 +84,18 @@ def get_link_user_prompt(url):
     links = fetch_website_links(url)
     user_prompt += "\n".join(links)
     return user_prompt
+
+# Alternative link user prompt example:
+# def get_link_user_prompt(url):
+#     user_prompt = f"""
+#         Here are the URLs found on {url}.
+#         Select up to 5 links that would help a brochure reader understand the company.
+#         Only return same-domain pages and ignore legal, terms, privacy, login, and social links.
+#         Format the output as a JSON object with `type` and `url` fields.
+#         """
+#     urls = fetch_website_links(url)
+#     user_prompt += "\n".join(urls)
+#     return user_prompt
 
 
 def filter_relevant_links(links, base_url, max_links=5):
@@ -141,6 +162,18 @@ and creates a short brochure about the company for prospective customers, invest
 Respond in markdown without code blocks.
 Include details of company culture, customers and careers/jobs if you have the information.
 """
+
+# Alternative brochure system prompt example:
+# brochure_system_prompt = """
+# You are a marketing copywriter.
+# Use the page contents to write a concise brochure that highlights:
+# - what the company does
+# - who it serves
+# - why it is unique
+# - any hiring or careers information
+# Output in clean markdown with headings and short paragraphs.
+# Do not include code blocks.
+# """
 
 # This function generates the user prompt for the brochure creation by combining the content from the landing page and the relevant links. It calls the fetch_page_and_relevant_links function to get the necessary information and then formats it into a user prompt that can be used to generate the brochure content.
 def get_brochure_user_prompt(company_name, url):

@@ -12,7 +12,7 @@ ollama = OpenAI(api_key="not-needed", base_url=base_url)
 
 
 
-
+# Function to scrape content from a given URL
 def scrape_content(url):
     try: 
         response = requests.get(url, timeout=10)
@@ -25,7 +25,7 @@ def scrape_content(url):
         print(f"Error scraping the webpage: {e}")
         return None
     
-    
+ # Function to summarize the content using OpenAI's chat completions   
 def summarize_content(content):
 
 
@@ -42,7 +42,7 @@ def summarize_content(content):
     )
     return responses.choices[0].message.content
 
-
+# user_prompt = input("Enter the URL of the webpage you want to summarize: ")
 content = input("Enter the URL of the webpage you want to summarize: ")
 
 scrape_data = scrape_content(content)

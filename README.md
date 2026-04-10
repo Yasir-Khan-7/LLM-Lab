@@ -14,7 +14,7 @@ LLM-Lab is an experimental repository for building and testing Large Language Mo
 - website scraping and HTML extraction
 - LLM-guided link selection for relevance
 - brochure-style content generation from website data
-- modular structure for NLP experimentation and reuse
+
 
 ## Getting started
 
